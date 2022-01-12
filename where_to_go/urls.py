@@ -20,6 +20,7 @@ from .views import view_tmp
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', view_tmp),
-    path('places/',include('places.urls'))
-
+    path('places/', include('places.urls'))
 ]
+
+admin.site.site_header = 'Администрирование сайта "where_to_go"'
