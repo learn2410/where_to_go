@@ -30,10 +30,10 @@ class PlaceAdmin(admin.ModelAdmin):
 
 
 class ImageAdmin(admin.ModelAdmin):
-    list_display = ('place_num','img_preview')
+    list_display = ('place_num', 'img_preview')
     list_filter = ['placeid']
     readonly_fields = ('img_preview',)
-    ordering = ('placeid','number')
+    ordering = ('placeid', 'number')
 
     def img_preview(self, obj):
         return obj.img_preview
@@ -42,10 +42,10 @@ class ImageAdmin(admin.ModelAdmin):
     img_preview.allow_tags = True
 
     class Meta:
-        ordering = ['placeid','number']
+        ordering = ['placeid', 'number']
         verbose_name = 'фото'
         verbose_name_plural = 'фотографии'
 
 
 admin.site.register(Place, PlaceAdmin)
-admin.site.register(Image,ImageAdmin)
+admin.site.register(Image, ImageAdmin)

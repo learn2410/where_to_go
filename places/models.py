@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 from django.utils.html import mark_safe
 
 
@@ -13,14 +12,15 @@ class Place(models.Model):
     def __str__(self):
         return self.title
 
+
 class Image(models.Model):
-    placeid=models.ForeignKey(Place,on_delete=models.CASCADE,null=False)
-    number=models.IntegerField("номер",default=0)
-    img=models.ImageField(upload_to='image')
+    placeid = models.ForeignKey(Place, on_delete=models.CASCADE, null=False)
+    number = models.IntegerField("номер", default=0)
+    img = models.ImageField(upload_to='image')
 
     @property
     def place_num(self):
-        return '{} - {}'.format(self.number,self.placeid)
+        return '{} - {}'.format(self.number, self.placeid)
 
     @property
     def img_preview(self):
