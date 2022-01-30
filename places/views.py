@@ -13,6 +13,7 @@ def view_blank(request):
 
 
 def detail_json(request, idfromurl):
+    print('** detail_json',request.get_raw_uri())
     p = get_object_or_404(Place, pk=idfromurl)
     d=p.get_place_json()
     return HttpResponse(d, content_type='application/json')
