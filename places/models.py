@@ -1,8 +1,10 @@
-from django.db import models
-from django.utils.html import mark_safe
 import json
-from django.urls import reverse
+
 from django.conf import settings
+from django.db import models
+from django.urls import reverse
+from django.utils.html import mark_safe
+
 
 class Place(models.Model):
     title = models.CharField(max_length=100, null=False, blank=True)
@@ -10,7 +12,7 @@ class Place(models.Model):
     description_long = models.TextField(null=False, blank=True)
     lng = models.FloatField(verbose_name="долгота")
     lat = models.FloatField(verbose_name="широта")
-    slug =models.AutoField
+    slug = models.AutoField
 
     def __str__(self):
         return self.title
@@ -18,38 +20,37 @@ class Place(models.Model):
     @property
     def geojson_feature(self):
         return {
-          "type": "Feature",
-          "geometry": {
-            "type": "Point",
-            "coordinates": [self.lng, self.lat]
-          },
-          "properties": {
-            "title": self.title,
-            "placeId": str(self.id),
-            "detailsUrl": self.get_place_json_url()
-          }
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [self.lng, self.lat]
+            },
+            "properties": {
+                "title": self.title,
+                "placeId": str(self.id),
+                "detailsUrl": self.get_place_json_url()
+            }
         }
 
     def get_place_json_url(self):
         return reverse('places:json_place', args=[self.pk])
 
     def get_place_json(self):
-        im=list(map(lambda s:settings.MEDIA_URL+s,Image.objects.filter(placeid=self.pk).order_by('number').values_list('img', flat=True)))
+        im = list(map(lambda s: settings.MEDIA_URL + s,
+                      Image.objects.filter(placeid=self.pk).order_by('number').values_list('img', flat=True)))
         # print(im)
         # TODO images urls
-        d={"title":self.title,
-           "imgs":im,
-           "description_short":self.description_short,
-           "description_long":self.description_long,
-           "coordinates":{
-               "lng":self.lng,
-               "lat":self.lat
-                }
-           }
+        d = {"title": self.title,
+             "imgs": im,
+             "description_short": self.description_short,
+             "description_long": self.description_long,
+             "coordinates": {
+                 "lng": self.lng,
+                 "lat": self.lat
+             }
+             }
         # print('*** d=',d)
-        return json.dumps(d,ensure_ascii=False)
-
-
+        return json.dumps(d, ensure_ascii=False)
 
 
 class Image(models.Model):
