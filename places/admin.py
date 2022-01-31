@@ -8,7 +8,7 @@ class ImageInline(admin.TabularInline):
     extra = 1
     fk_name = "placeid"
     # list_display = ('img_preview' )
-    fields=['img_preview',('number','img')]
+    fields=['img','img_preview','number']
     readonly_fields = ('img_preview',)
 
     def img_preview(self, obj):
