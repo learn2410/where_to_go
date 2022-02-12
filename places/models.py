@@ -52,10 +52,15 @@ class Place(models.Model):
         # print('*** d=',d)
         return json.dumps(d, ensure_ascii=False)
 
+    class Meta(object):
+        verbose_name = 'МЕСТО'
+        verbose_name_plural = 'МЕСТА'
+
+
 
 class Image(models.Model):
+    number = models.PositiveIntegerField("номер", default=0, blank=False, null=False)
     placeid = models.ForeignKey(Place, on_delete=models.CASCADE, null=False)
-    number = models.IntegerField("номер", default=0)
     img = models.ImageField(upload_to='image')
 
     @property
@@ -67,3 +72,11 @@ class Image(models.Model):
         if self.img:
             return mark_safe('<img src="{}" height="200" />'.format(self.img.url))
         return ""
+
+    def __str__(self):
+        return self.place_num
+
+    class Meta(object):
+        ordering = ['number']
+        verbose_name = 'ФОТО'
+        verbose_name_plural = 'ФОТОГРАФИИ'
