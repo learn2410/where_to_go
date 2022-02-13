@@ -23,7 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('old', view_tmp),
     path('', include('places.urls')),
-    # path('places/', include('places.urls')),
+    path('tinymce/', include('tinymce.urls')),
 
 ]
 if settings.DEBUG:

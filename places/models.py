@@ -4,12 +4,13 @@ from django.conf import settings
 from django.db import models
 from django.urls import reverse
 from django.utils.html import mark_safe
+from tinymce import models as tinymce_models
 
 
 class Place(models.Model):
     title = models.CharField(max_length=100, null=False, blank=True)
     description_short = models.CharField(max_length=256, null=False, blank=True)
-    description_long = models.TextField(null=False, blank=True)
+    description_long = tinymce_models.HTMLField(null=False, blank=True)
     lng = models.FloatField(verbose_name="долгота")
     lat = models.FloatField(verbose_name="широта")
     slug = models.AutoField
