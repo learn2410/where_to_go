@@ -58,7 +58,6 @@ class Place(models.Model):
         verbose_name_plural = 'МЕСТА'
 
 
-
 class Image(models.Model):
     number = models.PositiveIntegerField("номер", default=0, blank=False, null=False)
     placeid = models.ForeignKey(Place, on_delete=models.CASCADE, null=False)

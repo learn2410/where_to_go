@@ -2,6 +2,8 @@ from adminsortable2.admin import SortableInlineAdminMixin
 from django.contrib import admin
 
 from .models import Place, Image
+
+
 # from tinymce.widgets import TinyMCE
 
 # from django.db import models
@@ -33,4 +35,3 @@ class PlaceAdmin(admin.ModelAdmin):
     # formfield_overrides = {
     #     models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
     # }
-
