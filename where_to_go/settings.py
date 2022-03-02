@@ -15,8 +15,6 @@ from pathlib import Path
 
 from environs import Env
 
-
-
 env = Env()
 env.read_env()
 
@@ -25,6 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
+SECRET_KEY = env.str("SECRET_KEY", default="REPLACE_ME__txi11625w^+234234hgsd_bvoog3d28_c9t)03odd=yupt0%e!")
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=['*'])
 
 SECURE_HSTS_SECONDS = 315360000
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -34,11 +34,6 @@ CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = not DEBUG
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY", "REPLACE_ME")
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", ['127.0.0.1'])
 
 # Application definition
 
@@ -118,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = env.str("TIME_ZONE", default="Asia/Yekaterinburg")
+TIME_ZONE = "Asia/Yekaterinburg"
 USE_I18N = True
 
 USE_L10N = True
@@ -130,7 +125,7 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = env.list("STATICFILES_DIRS",[os.path.join(BASE_DIR, "static"), ])
+STATICFILES_DIRS = env.list("STATICFILES_DIRS", [os.path.join(BASE_DIR, "static"), ])
 
 MEDIA_ROOT = env.str("MEDIA_ROOT", os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'
