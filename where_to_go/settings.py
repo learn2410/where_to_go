@@ -125,10 +125,10 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-if sys.argv[1] != 'runserver':
-    STATIC_ROOT = os.path.join(BASE_DIR, "static")
-else:
+if DEBUG:
     STATICFILES_DIRS = env.list("STATICFILES_DIRS", [os.path.join(BASE_DIR, "static"), ])
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 MEDIA_ROOT = env.str("MEDIA_ROOT", os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'
