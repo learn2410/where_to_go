@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 import os
+import sys
 from pathlib import Path
 
 from environs import Env
@@ -33,7 +34,6 @@ SECURE_HSTS_PRELOAD = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 SECURE_SSL_REDIRECT = not DEBUG
-
 
 # Application definition
 
@@ -125,7 +125,10 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = env.list("STATICFILES_DIRS", [os.path.join(BASE_DIR, "static"), ])
+if sys.argv[1] != 'runserver':
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+else:
+    STATICFILES_DIRS = env.list("STATICFILES_DIRS", [os.path.join(BASE_DIR, "static"), ])
 
 MEDIA_ROOT = env.str("MEDIA_ROOT", os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'

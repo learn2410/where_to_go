@@ -39,7 +39,6 @@ class Place(models.Model):
     def get_place_json(self):
         im = list(map(lambda s: settings.MEDIA_URL + s,
                       Image.objects.filter(placeid=self.pk).order_by('number').values_list('img', flat=True)))
-        # print(im)
         # TODO images urls
         d = {"title": self.title,
              "imgs": im,
@@ -50,7 +49,6 @@ class Place(models.Model):
                  "lat": self.lat
              }
              }
-        # print('*** d=',d)
         return json.dumps(d, ensure_ascii=False)
 
     class Meta(object):
