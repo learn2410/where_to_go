@@ -8,12 +8,13 @@ from tinymce import models as tinymce_models
 
 
 class Place(models.Model):
-    title = models.CharField(max_length=100, null=False, blank=True)
+    title = models.CharField(max_length=100, null=False, blank=False, unique=True)
     description_short = models.CharField(max_length=256, null=False, blank=True)
     description_long = tinymce_models.HTMLField(null=False, blank=True)
     lng = models.FloatField(verbose_name="долгота")
     lat = models.FloatField(verbose_name="широта")
-    slug = models.AutoField
+
+    # slug = models.AutoField
 
     def __str__(self):
         return self.title
@@ -39,6 +40,7 @@ class Place(models.Model):
     def get_place_json(self):
         im = list(map(lambda s: settings.MEDIA_URL + s,
                       Image.objects.filter(placeid=self.pk).order_by('number').values_list('img', flat=True)))
+        # print(im)
         # TODO images urls
         d = {"title": self.title,
              "imgs": im,
@@ -49,6 +51,7 @@ class Place(models.Model):
                  "lat": self.lat
              }
              }
+        # print('*** d=',d)
         return json.dumps(d, ensure_ascii=False)
 
     class Meta(object):
