@@ -86,7 +86,7 @@ WSGI_APPLICATION = 'where_to_go.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': env.str('DATABASE_NAME', default=f'{BASE_DIR}/db.sqlite3'),
+        'NAME': env.str('DATABASE_NAME', default=os.path.join(BASE_DIR, 'db.sqlite3')),
     }
 }
 
@@ -113,7 +113,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = "Asia/Yekaterinburg"
+TIME_ZONE = env.str("TIME_ZONE",default="Asia/Yekaterinburg")
 USE_I18N = True
 
 USE_L10N = True
