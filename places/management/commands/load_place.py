@@ -3,12 +3,13 @@ import os
 from urllib.parse import urlparse
 
 import requests
+from PIL import Image as pil_image
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from pathvalidate import sanitize_filename
 
 from places.models import Place, Image
-from PIL import Image as pil_image
+
 
 def get_place(url):
     response = requests.get(url, allow_redirects=False)
@@ -19,17 +20,16 @@ def get_place(url):
 def optimize_image(image_path):
     max_size = (1200, 800)
     img = pil_image.open(image_path)
-    width,height=img.size
-    k=max(1,min(width/max_size[0],height/max_size[1]))
-    img=img.resize((int(width/k),int(height/k)))
+    width, height = img.size
+    k = max(1, min(width / max_size[0], height / max_size[1]))
+    img = img.resize((int(width / k), int(height / k)))
     img.save(image_path)
 
 
-def get_image(img_url):
-    tmp_dir = os.path.join(settings.MEDIA_ROOT, 'tmp')
-    os.makedirs(tmp_dir, exist_ok=True)
+def get_image(img_url, save_path):
+    os.makedirs(save_path, exist_ok=True)
     img_filename = sanitize_filename(urlparse(img_url).path.split('/')[-1])
-    img_filepath = os.path.normcase(os.path.join(tmp_dir, img_filename))
+    img_filepath = os.path.normcase(os.path.join(save_path, img_filename))
     response = requests.get(img_url, allow_redirects=False)
     response.raise_for_status()
     with open(img_filepath, 'wb') as file:
@@ -50,12 +50,13 @@ def append_place(json_url):
     if response.is_redirect:
         return
     newplace = json.loads(response.text.replace('\n', ''))
-    if not verify_json(newplace):
+    if not ({'title', 'description_long', 'coordinates', 'description_short'}.issubset(set(newplace.keys()))
+            or {'lng', 'lat'}.issubset(set(newplace['coordinates'].keys()))):
         return
     tmp_dir = os.path.join(settings.MEDIA_ROOT, 'tmp')
     img_dir = os.path.join(settings.MEDIA_ROOT, 'image')
     Place.objects.filter(title=newplace['title']).delete()
-    obj, _created = Place.objects.get_or_create(
+    place_obj, _created = Place.objects.get_or_create(
         title=newplace['title'],
         defaults={
             'description_short': newplace['description_short'],
@@ -64,12 +65,14 @@ def append_place(json_url):
             'lat': newplace['coordinates']['lat']
         }
     )
-    obj.save()
-    for i in newplace['imgs']:
-        im = get_image(i)
-        os.replace(os.path.join(tmp_dir, im), os.path.join(img_dir, im))
-        ii = Image.objects.create(placeid_id=obj.pk, img=f'image/{im}')
-        ii.save()
+    place_obj.save()
+    new_images = []
+    for img_url in newplace['imgs']:
+        img_filename = get_image(img_url, tmp_dir)
+        os.replace(os.path.join(tmp_dir, img_filename), os.path.join(img_dir, img_filename))
+        new_images.append(Image(placeid_id=place_obj.pk, img=f'image/{img_filename}'))
+    Image.objects.bulk_create(new_images)
+
 
 
 class Command(BaseCommand):
