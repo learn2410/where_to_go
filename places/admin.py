@@ -4,14 +4,10 @@ from django.contrib import admin
 from .models import Place, Image
 
 
-# from tinymce.widgets import TinyMCE
-
-# from django.db import models
-
 class ImageInline(SortableInlineAdminMixin, admin.TabularInline):
     model = Image
     extra = 1
-    fk_name = "placeid"
+    fk_name = "place"
     list_display = ('img_preview')
     fields = ['img', 'img_preview', 'number']
     readonly_fields = ('img_preview',)
@@ -32,7 +28,3 @@ class PlaceAdmin(admin.ModelAdmin):
     search_fields = ['title']
     ordering = ['title']
     inlines = [ImageInline, ]
-
-    # formfield_overrides = {
-    #     models.TextField: {'widget': TinyMCE(attrs={'cols': 80, 'rows': 30})},
-    # }

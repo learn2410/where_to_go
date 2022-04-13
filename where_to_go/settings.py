@@ -23,9 +23,11 @@ env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool("DEBUG", default=False)
+# DEBUG = env.bool("DEBUG", default=False)
+DEBUG = "runserver" in sys.argv
+
 SECRET_KEY = env.str("SECRET_KEY", default="REPLACE_ME__txi11625w^+234234hgsd_bvoog3d28_c9t)03odd=yupt0%e!")
-ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=['*'])
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
 
 SECURE_HSTS_SECONDS = 315360000
 SECURE_CONTENT_TYPE_NOSNIFF = True
@@ -113,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-ru'
 
-TIME_ZONE = env.str("TIME_ZONE",default="Asia/Yekaterinburg")
+TIME_ZONE = env.str("TIME_ZONE", default="Asia/Yekaterinburg")
 USE_I18N = True
 
 USE_L10N = True
@@ -125,10 +127,9 @@ USE_TZ = True
 
 
 STATIC_URL = '/static/'
-if DEBUG:
-    STATICFILES_DIRS = env.list("STATICFILES_DIRS", [os.path.join(BASE_DIR, "static"), ])
-else:
-    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+STATIC_ROOT = env.str("STATIC_ROOT", default=os.path.join(BASE_DIR, "static_files"))
+STATICFILES_DIRS = env.list("STATICFILES_DIRS", default=[os.path.join(BASE_DIR, "static"), ])
 
 MEDIA_ROOT = env.str("MEDIA_ROOT", os.path.join(BASE_DIR, 'media'))
 MEDIA_URL = '/media/'

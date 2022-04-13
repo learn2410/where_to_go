@@ -11,10 +11,3 @@ setuptools~=60.8.2
 sqlparse~=0.4.2
 requests~=2.27.1
 pathvalidate~=2.5.0
-
-
-
-
-
-
-

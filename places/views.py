@@ -14,6 +14,6 @@ def view_blank(request):
 
 
 def detail_json(request, idfromurl):
-    p = get_object_or_404(Place, pk=idfromurl)
-    d = p.get_place_json()
-    return HttpResponse(d, content_type='application/json')
+    place = get_object_or_404(Place, pk=idfromurl)
+    content = place.get_place_json()
+    return HttpResponse(content, content_type='application/json')
