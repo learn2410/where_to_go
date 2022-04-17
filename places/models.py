@@ -1,4 +1,5 @@
 import json
+
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -8,11 +9,11 @@ from tinymce import models as tinymce_models
 
 
 class Place(models.Model):
-    title = models.CharField(max_length=100, null=False, blank=False, unique=True)
-    description_short = models.CharField(max_length=256, null=False, blank=True)
-    description_long = tinymce_models.HTMLField(null=False, blank=True)
-    lng = models.FloatField(verbose_name="долгота")
-    lat = models.FloatField(verbose_name="широта")
+    title = models.CharField(verbose_name="заголовок", max_length=100, unique=True)
+    description_short = models.TextField(verbose_name="краткое описание", blank=True)
+    description_long = tinymce_models.HTMLField(verbose_name="подробное описание", blank=True)
+    lng = models.FloatField(verbose_name="долгота", default=37.618105)
+    lat = models.FloatField(verbose_name="широта", default=55.749013)
 
     def __str__(self):
         return self.title
@@ -37,17 +38,17 @@ class Place(models.Model):
 
     def get_place_json(self):
         image_urls = list(map(lambda s: settings.MEDIA_URL + s,
-                              self.myplace.order_by('number').values_list('img', flat=True)))
-        info_place = {"title": self.title,
-                      "imgs": image_urls,
-                      "description_short": self.description_short,
-                      "description_long": self.description_long,
-                      "coordinates": {
-                          "lng": self.lng,
-                          "lat": self.lat
-                      }
-                      }
-        return json.dumps(info_place, ensure_ascii=False)
+                              self.place_images.order_by('number').values_list('img', flat=True)))
+        payload_place = {"title": self.title,
+                         "imgs": image_urls,
+                         "description_short": self.description_short,
+                         "description_long": self.description_long,
+                         "coordinates": {
+                             "lng": self.lng,
+                             "lat": self.lat
+                         }
+                         }
+        return json.dumps(payload_place, ensure_ascii=False)
 
     class Meta(object):
         verbose_name = 'МЕСТО'
@@ -55,9 +56,9 @@ class Place(models.Model):
 
 
 class Image(models.Model):
-    number = models.PositiveIntegerField("номер", default=0, blank=False, null=False)
-    place = models.ForeignKey(Place, on_delete=models.CASCADE, null=False, related_name='myplace')
-    img = models.ImageField(upload_to='image')
+    number = models.PositiveIntegerField("номер", default=0)
+    place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='place_images')
+    img = models.ImageField(verbose_name="фотография", upload_to='image')
 
     @property
     def place_num(self):
@@ -66,7 +67,6 @@ class Image(models.Model):
     @property
     def img_preview(self):
         if self.img:
-            # return mark_safe('<img src="{}" height="200" />'.format(self.img.url))
             return format_html('<img src="{}" height="200" />', mark_safe(self.img.url))
         return ""
 

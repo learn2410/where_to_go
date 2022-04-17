@@ -13,7 +13,7 @@ def view_blank(request):
     return render(request, 'places/pindex.html', content)
 
 
-def detail_json(request, idfromurl):
-    place = get_object_or_404(Place, pk=idfromurl)
+def detail_json(request, place_id):
+    place = get_object_or_404(Place, pk=place_id)
     content = place.get_place_json()
     return HttpResponse(content, content_type='application/json')

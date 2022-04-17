@@ -1,4 +1,3 @@
-import json
 import os
 from urllib.parse import urlparse
 
@@ -11,16 +10,10 @@ from pathvalidate import sanitize_filename
 from places.models import Place, Image
 
 
-def get_place1(url):
-    response = requests.get(url, allow_redirects=False)
-    response.raise_for_status()
-    return None if response.is_redirect else json.loads(response.text.replace('\n', ''))
-
-
 def get_place(url):
-    response = requests.get(url, allow_redirects=False)
+    response = requests.get(url)
     response.raise_for_status()
-    return None if response.is_redirect else response.json()
+    return response.json()
 
 
 def optimize_image(image_path):
@@ -43,10 +36,8 @@ def get_image(img_url, save_path):
 
 
 def append_place(json_url):
-    response = requests.get(json_url, allow_redirects=False)
+    response = requests.get(json_url)
     response.raise_for_status()
-    if response.is_redirect:
-        return
     new_place = response.json()
     if not ({'title', 'description_long', 'coordinates', 'description_short'}.issubset(set(new_place.keys()))
             or {'lng', 'lat'}.issubset(set(new_place['coordinates'].keys()))):
