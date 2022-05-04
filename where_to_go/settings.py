@@ -23,8 +23,8 @@ env.read_env()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = env.bool("DEBUG", default=False)
-DEBUG = "runserver" in sys.argv
+DEBUG = env.bool("DEBUG", default=False)
+
 
 SECRET_KEY = env.str("SECRET_KEY", default="REPLACE_ME__txi11625w^+234234hgsd_bvoog3d28_c9t)03odd=yupt0%e!")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=[])
