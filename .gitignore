@@ -3,7 +3,6 @@ venv/
 .idea/
 .env
 */__pycache__/
-*/migrations/
 tmp/
 db.sqlite3
 media/

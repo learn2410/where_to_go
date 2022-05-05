@@ -1,10 +1,5 @@
-import json
-
-from django.conf import settings
 from django.db import models
 from django.urls import reverse
-from django.utils.html import format_html
-from django.utils.html import mark_safe
 from tinymce import models as tinymce_models
 
 
@@ -12,43 +7,14 @@ class Place(models.Model):
     title = models.CharField(verbose_name="заголовок", max_length=100, unique=True)
     description_short = models.TextField(verbose_name="краткое описание", blank=True)
     description_long = tinymce_models.HTMLField(verbose_name="подробное описание", blank=True)
-    lng = models.FloatField(verbose_name="долгота", default=37.618105)
-    lat = models.FloatField(verbose_name="широта", default=55.749013)
+    lng = models.FloatField(verbose_name="долгота")
+    lat = models.FloatField(verbose_name="широта")
 
     def __str__(self):
         return self.title
 
-    @property
-    def geojson_feature(self):
-        return {
-            "type": "Feature",
-            "geometry": {
-                "type": "Point",
-                "coordinates": [self.lng, self.lat]
-            },
-            "properties": {
-                "title": self.title,
-                "placeId": str(self.id),
-                "detailsUrl": self.get_place_json_url()
-            }
-        }
-
     def get_place_json_url(self):
         return reverse('places:json_place', args=[self.pk])
-
-    def get_place_json(self):
-        image_urls = list(map(lambda s: settings.MEDIA_URL + s,
-                              self.place_images.order_by('number').values_list('img', flat=True)))
-        payload_place = {"title": self.title,
-                         "imgs": image_urls,
-                         "description_short": self.description_short,
-                         "description_long": self.description_long,
-                         "coordinates": {
-                             "lng": self.lng,
-                             "lat": self.lat
-                         }
-                         }
-        return json.dumps(payload_place, ensure_ascii=False)
 
     class Meta(object):
         verbose_name = 'МЕСТО'
@@ -57,18 +23,12 @@ class Place(models.Model):
 
 class Image(models.Model):
     number = models.PositiveIntegerField("номер", default=0)
-    place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='place_images')
+    place = models.ForeignKey(Place, on_delete=models.CASCADE, related_name='images')
     img = models.ImageField(verbose_name="фотография", upload_to='image')
 
     @property
     def place_num(self):
         return '{} - {}'.format(self.number, self.place)
-
-    @property
-    def img_preview(self):
-        if self.img:
-            return format_html('<img src="{}" height="200" />', mark_safe(self.img.url))
-        return ""
 
     def __str__(self):
         return self.place_num
