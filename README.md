@@ -9,7 +9,7 @@
 
 - Скачайте код.
 - Установите зависимости командой `pip install -r requirements.txt`.
-- Скачайте и распакуйте из архива [sample_data.zip](https://github.com/learn2410/additional_files/raw/6667327a75afd0ea2517b054000579258a44cd64/sample_data.zip) демонстрационную базу и папку с изображениями.  
+- Скачайте и распакуйте из архива [sample_data.zip](https://github.com//learn2410/additional_files/raw/43c2faf382bba05caa8599a32a9f3643641d4452/sample_data.zip) демонстрационную базу и папку с изображениями.  
 - Запустите сервер командой `python3 manage.py runserver`.
 
 После этого переходите по ссылке [http://localhost:8000](http://localhost:8000), вы увидите главную страницу.  
@@ -38,8 +38,8 @@
     }
 }
 ```
-Ссылки на URL для загрузки демонстрационных локаций можно взять [отсюда](https://github.com/devmanorg/where-to-go-places)
- (папка "places", выбиракм локацию и жмем кнопку "Raw", затем копируем URL из адресной строки). 
+Ссылки на URL для загрузки демонстрационных локаций можно взять [здесь](https://github.com/devmanorg/where-to-go-places)
+ (папка "places", выбираем локацию и жмем кнопку "Raw", затем копируем URL из адресной строки). 
     
 
 
