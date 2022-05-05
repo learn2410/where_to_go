@@ -1,3 +1,4 @@
+import logging
 import os
 from urllib.parse import urlparse
 
@@ -8,12 +9,6 @@ from django.core.management.base import BaseCommand
 from pathvalidate import sanitize_filename
 
 from places.models import Place, Image
-
-
-def get_place(url):
-    response = requests.get(url)
-    response.raise_for_status()
-    return response.json()
 
 
 def optimize_image(image_path):
@@ -35,18 +30,19 @@ def get_image(img_url, save_path):
     return img_filename
 
 
-def append_place(json_url):
+def load_place(json_url):
     response = requests.get(json_url)
     response.raise_for_status()
     new_place = response.json()
     if not ({'title', 'description_long', 'coordinates', 'description_short'}.issubset(set(new_place.keys()))
-            or {'lng', 'lat'}.issubset(set(new_place['coordinates'].keys()))):
+            and {'lng', 'lat'}.issubset(set(new_place['coordinates'].keys()))):
+        logging.warning(f"response does not contain required field, place didn't load\n\t url={json_url}")
         return
     tmp_dir = os.path.join(settings.MEDIA_ROOT, 'tmp')
     img_dir = os.path.join(settings.MEDIA_ROOT, 'image')
     os.makedirs(img_dir, exist_ok=True)
     Place.objects.filter(title=new_place['title']).delete()
-    place_obj, _created = Place.objects.get_or_create(
+    place, _status = Place.objects.get_or_create(
         title=new_place['title'],
         defaults={
             'description_short': new_place['description_short'],
@@ -59,7 +55,7 @@ def append_place(json_url):
     for img_url in new_place['imgs']:
         img_filename = get_image(img_url, tmp_dir)
         os.replace(os.path.join(tmp_dir, img_filename), os.path.join(img_dir, img_filename))
-        new_images.append(Image(place_id=place_obj.pk, img=f'image/{img_filename}'))
+        new_images.append(Image(place_id=place.pk, img=f'image/{img_filename}'))
     Image.objects.bulk_create(new_images)
 
 
@@ -71,4 +67,4 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         url = kwargs['json_url']
-        append_place(url)
+        load_place(url)
